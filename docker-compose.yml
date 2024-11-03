@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  # Oracle Source Database
+  oracle_source:
+    image: gvenzl/oracle-xe
+    container_name: oracle-source
+    environment:
+      - ORACLE_PASSWORD=Oracle123  # password for Oracle XE system accounts
+    ports:
+      - "1521:1521"  # Default Oracle port for source DB
+    volumes:
+      - oracle_source_data:/opt/oracle/oradata  # persistent storage for source DB
+
+  # Oracle Target Database
+  oracle_target:
+    image: gvenzl/oracle-xe
+    container_name: oracle-target
+    environment:
+      - ORACLE_PASSWORD=Oracle123  # password for Oracle XE system accounts
+    ports:
+      - "1522:1521"  # Map to a different port for target DB
+    volumes:
+      - oracle_target_data:/opt/oracle/oradata  # persistent storage for target DB
+
+  # GoldenGate for capturing changes from Oracle Source
+  gg_source:
+    image: container-registry.oracle.com/goldengate/goldengate-free
+    container_name: gg-source
+    environment:
+      - OGG_ADMIN_PASSWORD=ggadmin123  # GoldenGate admin password
+      - OGG_SRC_DATABASE=oracle-source:1521/ORCLPDB1  # Point to Oracle source DB
+      - OGG_TGT_DATABASE=gg-target:16001  # Point to GoldenGate target
+    depends_on:
+      - oracle_source
+    ports:
+      - "16000:16000"  # GoldenGate source service port
+    volumes:
+      - gg_source_data:/u01/ogg  # Persistent storage for GoldenGate source config
+
+  # GoldenGate for applying changes to Oracle Target
+  gg_target:
+    image: container-registry.oracle.com/goldengate/goldengate-free
+    container_name: gg-target
+    environment:
+      - OGG_ADMIN_PASSWORD=ggadmin123  # GoldenGate admin password
+      - OGG_SRC_DATABASE=gg-source:16000  # Point to GoldenGate source
+      - OGG_TGT_DATABASE=oracle-target:1521/ORCLPDB2  # Point to Oracle target DB
+    depends_on:
+      - oracle_target
+      - gg_source
+    ports:
+      - "16001:16000"  # GoldenGate target service port
+    volumes:
+      - gg_target_data:/u01/ogg  # Persistent storage for GoldenGate target config
+
+volumes:
+  oracle_source_data:
+  oracle_target_data:
+  gg_source_data:
+  gg_target_data:
