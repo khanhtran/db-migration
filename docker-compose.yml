@@ -31,20 +31,21 @@ services:
       - oracle_source
     ports:
       - "8080:80"  # GoldenGate source service port
+      - "8443:443"
     volumes:
       - gg_source_data:/u01/ogg  # Persistent storage for GoldenGate source config
 
   # GoldenGate for applying changes to Oracle Target
-  gg_target:
-    image: container-registry.oracle.com/goldengate/goldengate-free
-    container_name: gg-target    
-    depends_on:
-      - oracle_target
-      - gg_source
-    ports:
-      - "8081:80"  # GoldenGate target service port
-    volumes:
-      - gg_target_data:/u01/ogg  # Persistent storage for GoldenGate target config
+  # gg_target:
+  #   image: container-registry.oracle.com/goldengate/goldengate-free
+  #   container_name: gg-target    
+  #   depends_on:
+  #     - oracle_target
+  #     - gg_source
+  #   ports:
+  #     - "8081:80"  # GoldenGate target service port
+  #   volumes:
+  #     - gg_target_data:/u01/ogg  # Persistent storage for GoldenGate target config
 
 volumes:
   oracle_source_data:
