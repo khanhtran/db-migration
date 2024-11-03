@@ -26,31 +26,23 @@ services:
   # GoldenGate for capturing changes from Oracle Source
   gg_source:
     image: container-registry.oracle.com/goldengate/goldengate-free
-    container_name: gg-source
-    environment:
-      - OGG_ADMIN_PASSWORD=ggadmin123  # GoldenGate admin password
-      - OGG_SRC_DATABASE=oracle-source:1521/ORCLPDB1  # Point to Oracle source DB
-      - OGG_TGT_DATABASE=gg-target:16001  # Point to GoldenGate target
+    container_name: gg-source    
     depends_on:
       - oracle_source
     ports:
-      - "16000:16000"  # GoldenGate source service port
+      - "8080:80"  # GoldenGate source service port
     volumes:
       - gg_source_data:/u01/ogg  # Persistent storage for GoldenGate source config
 
   # GoldenGate for applying changes to Oracle Target
   gg_target:
     image: container-registry.oracle.com/goldengate/goldengate-free
-    container_name: gg-target
-    environment:
-      - OGG_ADMIN_PASSWORD=ggadmin123  # GoldenGate admin password
-      - OGG_SRC_DATABASE=gg-source:16000  # Point to GoldenGate source
-      - OGG_TGT_DATABASE=oracle-target:1521/ORCLPDB2  # Point to Oracle target DB
+    container_name: gg-target    
     depends_on:
       - oracle_target
       - gg_source
     ports:
-      - "16001:16000"  # GoldenGate target service port
+      - "8081:80"  # GoldenGate target service port
     volumes:
       - gg_target_data:/u01/ogg  # Persistent storage for GoldenGate target config
 
