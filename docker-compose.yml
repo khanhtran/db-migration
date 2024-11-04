@@ -3,26 +3,27 @@ version: '3.8'
 services:
   # Oracle Source Database
   oracle_source:
-    image: gvenzl/oracle-xe
+    image: container-registry.oracle.com/database/enterprise:21.3.0.0
     container_name: oracle-source
     environment:
-      - ORACLE_PASSWORD=Oracle123  # password for Oracle XE system accounts
+      - ORACLE_PDB=sourcedb
+      - ORACLE_PWD=Oracle123
     ports:
       - "1521:1521"  # Default Oracle port for source DB
     volumes:
       - oracle_source_data:/opt/oracle/oradata  # persistent storage for source DB
-      - ./init.sql:/container-entrypoint-initdb.d/init.sql
+      - ./init.sql:/docker-entrypoint-initdb.d/setup/init.sql
 
   # Oracle Target Database
-  oracle_target:
-    image: gvenzl/oracle-xe
-    container_name: oracle-target
-    environment:
-      - ORACLE_PASSWORD=Oracle123  # password for Oracle XE system accounts
-    ports:
-      - "1522:1521"  # Map to a different port for target DB
-    volumes:
-      - oracle_target_data:/opt/oracle/oradata  # persistent storage for target DB
+  # oracle_target:
+  #   image: gvenzl/oracle-xe
+  #   container_name: oracle-target
+  #   environment:
+  #     - ORACLE_PASSWORD=Oracle123  # password for Oracle XE system accounts
+  #   ports:
+  #     - "1522:1521"  # Map to a different port for target DB
+  #   volumes:
+  #     - oracle_target_data:/opt/oracle/oradata  # persistent storage for target DB
 
   # GoldenGate for capturing changes from Oracle Source
   gg_source:
