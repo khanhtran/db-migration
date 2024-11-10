@@ -6,14 +6,14 @@ Container Names
     oracle-source
     oracle-target
 
-All using default Oracle SID and PDB:
+All using default Oracle SID and PDB(Pluggable Database):
     ORACLE_SID: ORCLCDB
     ORACLE_PDB: ORCLPDB1
 
 
 connect:
-    docker exec -it <oracle-db> sqlplus system/<your_password>@<your_SID>
-
+    docker exec -it <oracle-db> sqlplus system/<your_password>@<your_SID or PDB>
+    
 
 
     
