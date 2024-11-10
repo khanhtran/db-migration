@@ -2,11 +2,18 @@
 login:
     docker login container-registry.oracle.com
 
+Container Names
+    oracle-source
+    oracle-target
 
-goldengate repo:
-    https://container-registry.oracle.com/ords/f?p=113:4:13503836146249:::4:P4_REPOSITORY,AI_REPOSITORY,AI_REPOSITORY_NAME,P4_REPOSITORY_NAME,P4_EULA_ID,P4_BUSINESS_AREA_ID:1743,1743,Oracle%20GoldenGate%20Free,Oracle%20GoldenGate%20Free,1,0&cs=3TW878PBehxzO_mnNkbcgq3IivYLA7Y78WB-qIZz8tShNZzh7edCU7Y7Iydpph7nwAOJl7CkD6AveJ_PNOxgNNQ
+All using default Oracle SID and PDB:
+    ORACLE_SID: ORCLCDB
+    ORACLE_PDB: ORCLPDB1
 
 
 connect:
-    ORACLE_PDB
+    docker exec -it <oracle-db> sqlplus system/<your_password>@<your_SID>
+
+
+
     
