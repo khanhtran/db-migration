@@ -13,6 +13,7 @@ All using default Oracle SID and PDB(Pluggable Database):
 
 connect:
     docker exec -it <oracle-db> sqlplus system/<your_password>@<your_SID or PDB>
+    docker exec -it oracle-source system/Oracle123@ORCLPDB1 as sysdba
     
 
 
