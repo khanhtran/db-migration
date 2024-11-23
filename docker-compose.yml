@@ -1,19 +1,18 @@
 services:
   # Oracle Source Database
-  oracle-source:
-    image: container-registry.oracle.com/database/enterprise:21.3.0.0
-    container_name: oracle-source
-    environment:      
-      ORACLE_PDB: mydb
-      ORACLE_PWD: mypwd
-
-    ports:
-      - "1521:1521"  # Default Oracle port for source DB
-    volumes:
-      - oracle_source_data:/opt/oracle/oradata  # persistent storage for source DB
-      - ./init.sql:/docker-entrypoint-initdb.d/setup/init.sql
-
+  # oracle-source:
+  #   image: container-registry.oracle.com/database/express:21.3.0-xe
+  #   container_name: oracle-source
+  #   environment:
+  #     ORACLE_PWD: myPassword
+  #   ports:
+  #     - "1521:1521"  # Default Oracle port for source DB
+  #   volumes:
+  #     - oracle_source_data:/opt/oracle/oradata  # persistent storage for source DB
+  #     - ./init.sql:/docker-entrypoint-initdb.d/setup/init.sql
+  
   # Oracle Target Database
+  
   # oracle_target:
   #   image: gvenzl/oracle-xe
   #   container_name: oracle-target
@@ -25,16 +24,16 @@ services:
   #     - oracle_target_data:/opt/oracle/oradata  # persistent storage for target DB
 
   # GoldenGate for capturing changes from Oracle Source
-  # gg-source:
-  #   image: container-registry.oracle.com/goldengate/goldengate-free
-  #   container_name: gg-source    
-  #   depends_on:
-  #     - oracle-source
-  #   ports:
-  #     - "8080:80"  # GoldenGate source service port
-  #     - "8443:443"
-  #   volumes:
-  #     - gg_source_data:/u01/ogg  # Persistent storage for GoldenGate source config
+  gg-source:
+    image: container-registry.oracle.com/goldengate/goldengate-free
+    container_name: gg-source
+    # environment:
+    #   OGG_ADMIN_PWD: myPassword
+    ports:
+      - "8080:80"  # GoldenGate source service port
+      - "8443:443"
+    volumes:
+      - gg_source_data:/u01/ogg  # Persistent storage for GoldenGate source config
 
   # GoldenGate for applying changes to Oracle Target
   # gg_target:
@@ -50,6 +49,6 @@ services:
 
 volumes:
   oracle_source_data:
-  # oracle_target_data:
-  # gg_source_data:
-  # gg_target_data:
+  oracle_target_data:
+  gg_source_data:
+  gg_target_data:

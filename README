@@ -1,3 +1,7 @@
+Container ref:
+- oracle-xe: https://container-registry.oracle.com/ords/ocr/ba/database/express
+- goldengate-free: https://container-registry.oracle.com/ords/ocr/ba/goldengate/goldengate-free
+
 
 login:
     docker login container-registry.oracle.com
@@ -6,14 +10,17 @@ Container Names
     oracle-source
     oracle-target
 
-All using default Oracle SID and PDB(Pluggable Database):
-    ORACLE_SID: ORCLCDB
-    ORACLE_PDB: ORCLPDB1
+Oracle:
+    sqlplus sys/myPassword as sysdba
+    select * from my_table;
+
+GoldenGate
+    Login: oggadmin
+    Password: myPassword
 
 
-connect:
-    docker exec -it <oracle-db> sqlplus system/<your_password>@<your_SID or PDB>
-    docker exec -it oracle-source system/Oracle123@ORCLPDB1 as sysdba
+
+
     
 
 
