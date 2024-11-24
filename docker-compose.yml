@@ -1,5 +1,6 @@
 services:
-  # Oracle Source Database
+  # Source
+  # Oracle
   oracle-source:
     image: container-registry.oracle.com/database/express:21.3.0-xe
     container_name: oracle-source
@@ -10,46 +11,41 @@ services:
     volumes:
       - oracle_source_data:/opt/oracle/oradata
       - ./init.sql:/docker-entrypoint-initdb.d/setup/init.sql
-      - ./:/working
-  
-  # Oracle Target Database
-  
+      - ./:/working  
+  # GoldenGate
+  gg-source:
+    image: container-registry.oracle.com/goldengate/goldengate-free
+    container_name: gg-source
+    environment:
+      OGG_ADMIN_PWD: myPassword1!
+    ports:
+      - "8080:80"
+    volumes:
+      - gg_source_data:/u01/ogg
+
+  # Target
+  # Oracle
   # oracle_target:
-  #   image: gvenzl/oracle-xe
-  #   container_name: oracle-target
-  #   environment:
-  #     - ORACLE_PASSWORD=Oracle123  # password for Oracle XE system accounts
+  #   image: container-registry.oracle.com/database/express:21.3.0-xe
+    # container_name: oracle-source
+    # environment:
+      # ORACLE_PWD: myPassword1!
   #   ports:
-  #     - "1522:1521"  # Map to a different port for target DB
+  #     - "1522:1521"
   #   volumes:
-  #     - oracle_target_data:/opt/oracle/oradata  # persistent storage for target DB
+  #     - oracle_target_data:/opt/oracle/oradata
 
-  # GoldenGate for capturing changes from Oracle Source
-  # gg-source:
-  #   image: container-registry.oracle.com/goldengate/goldengate-free
-  #   container_name: gg-source
-  #   environment:
-  #     OGG_ADMIN_PWD: myPassword1!
-  #   ports:
-  #     - "8080:80"  # GoldenGate source service port
-  #     - "8443:443"
-  #   volumes:
-  #     - gg_source_data:/u01/ogg # Persistent storage for GoldenGate source config
-
-  # GoldenGate for applying changes to Oracle Target
+  # GoldenGate
   # gg_target:
   #   image: container-registry.oracle.com/goldengate/goldengate-free
   #   container_name: gg-target    
-  #   depends_on:
-  #     - oracle_target
-  #     - gg_source
   #   ports:
-  #     - "8081:80"  # GoldenGate target service port
+  #     - "8081:80"
   #   volumes:
-  #     - gg_target_data:/u01/ogg  # Persistent storage for GoldenGate target config
+  #     - gg_target_data:/u01/ogg
 
 volumes:
   oracle_source_data:
-  oracle_target_data:
   gg_source_data:
+  oracle_target_data:
   gg_target_data:
