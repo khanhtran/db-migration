@@ -18,7 +18,11 @@ GoldenGate
     Login: oggadmin
     Password: myPassword
 
-
+Troubleshootings:
+- goldengate could not start:
+    + docker compose down
+    + docker volume prune -f
+    + make sure all volumes are deleted
 
 
     
