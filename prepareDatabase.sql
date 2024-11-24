@@ -1,0 +1,122 @@
+--
+--########################################################################################
+--          Database Information
+--########################################################################################
+--Database Name:                XE
+--Database Host Name:           5ddf05aaf614
+--Database Instance Name:       XE
+--Database Unique Name:         XE
+--Database Version:             21
+--Database is Container (CDB):  YES
+--Database CDB Service Name:    XE
+--Database PDB Service Name:    XE
+--Database CDB User Exist:      NO    (User Name:  )
+--Database PDB User Exist:      NO    (User Name:  GGADMIN)
+--
+--########################################################################################
+--          Database GoldenGate Status  
+--########################################################################################
+--Database Restart Required:    YES  
+--Database Archived Log Mode:   NO        (Required value for GoldenGate: YES)
+--Database Force Logging Mode:  NO        (Required value for GoldenGate: YES)
+--Database Supplemental Mode:   NO        (Required value for GoldenGate: YES)
+--Database Stream Pool Size Mb: 0         (Recommended value for GoldenGate: 512Mb)
+--GoldenGate Enable Parameter:  FALSE     (Required value for GoldenGate: TRUE)
+--
+--########################################################################################
+--          SQL Script to Enable GoldenGate in the XE Database  
+--########################################################################################
+--
+-- The database is non-RAC, its not in Archived Log Mode and a database Restart is required.
+-- Recommended Process:
+--SHUTDOWN IMMEDIATE;
+--STARTUP MOUNT;
+--ALTER DATABASE ARCHIVELOG;
+--ALTER DATABASE OPEN;
+--
+
+-- Database XE STREAMS_POOL_SIZE current size is 0Mb and it will be modified to 512Mb
+-- The STREAMS_POOL_SIZE value helps determine the size of the Streams pool.
+--
+-- Property            Description
+-- Parameter type      Big integer
+-- Syntax              STREAMS_POOL_SIZE = integer [K | M | G]
+-- Default value       0
+-- Modifiable          ALTER SYSTEM
+-- Modifiable in a PDB No
+-- Range of values     Minimum: 0
+--                     Maximum: operating system-dependent
+-- Basic               No
+-- 
+-- Oracle's Automatic Shared Memory Management feature manages the size of
+-- the Streams pool when the SGA_TARGET initialization parameter is set to 
+-- a nonzero value. If the STREAMS_POOL_SIZE initialization parameter also 
+-- is set to a nonzero value, then Automatic Shared Memory Management uses 
+-- this value as a minimum for the Streams pool.
+-- Oracle GoldenGate recommends streams_pool_size to be set at 1G or 10% of allocated SGA, whichever is smaller
+ALTER SYSTEM SET STREAMS_POOL_SIZE=512M SCOPE=BOTH SID='XE';
+--
+-- Database XE is not in the recommended Force Logging Mode, alter database is required
+--
+-- Use this clause to put the database into or take the database out of FORCE LOGGING mode. 
+-- The database must be mounted or open.
+-- 
+-- In FORCE LOGGING mode, Oracle Database logs all changes in the database except changes in 
+-- temporary tablespaces and temporary segments. This setting takes precedence over and is 
+-- independent of any NOLOGGING or FORCE LOGGING settings you specify for individual 
+-- tablespaces and any NOLOGGING settings you specify for individual database objects.
+-- Oracle strongly recommends putting the Oracle source database into forced logging mode. 
+-- Forced logging mode forces the logging of all transactions and loads, overriding any user 
+-- or storage settings to the contrary. This ensures that no source data in the Extract configuration gets missed.
+-- 
+-- If you specify FORCE LOGGING, then Oracle Database waits for all ongoing unlogged operations to finish.
+--
+ALTER DATABASE FORCE LOGGING;
+--
+-- Database XE GoldenGate Replication Parameter is not ENABLED, alter database is required
+-- 
+-- Property             Description
+-- Parameter type       Boolean
+-- Default value        false
+-- Modifiable           ALTER SYSTEM
+-- Modifiable in a PDB  No
+-- Range of values      true | false
+-- Basic                No
+-- Oracle RAC All       instances must have the same setting
+-- 
+-- This parameter primarily controls supplemental logging required to support logical 
+-- replication of new data types and operations. The redo log file is designed to be 
+-- applied physically to a database, therefore the default contents of the redo log file 
+-- often do not contain sufficient information to allow logged changes to be converted 
+-- into SQL statements. Supplemental logging adds extra information into the redo log 
+-- files so that replication can convert logged changes into SQL statements without 
+-- having to access the database for each change. Previously these extra changes 
+-- were controlled by the supplemental logging DDL. Now the ENABLE_GOLDENGATE_REPLICATION 
+-- parameter must also be set to enable the required supplemental logging for any 
+-- new data types or operations.
+-- 
+ALTER SYSTEM SET ENABLE_GOLDENGATE_REPLICATION=TRUE SCOPE=BOTH;
+--
+-- Database XE does not have SUPPLEMENTAL LOGGING enabled and an alter database is required.
+-- 
+-- In addition to force logging, the minimal supplemental logging, a database-level option, is required for an Oracle source database 
+-- when using Oracle GoldenGate. This adds row chaining information, if any exists, to the redo log for update operations.
+-- 
+ALTER DATABASE ADD SUPPLEMENTAL LOG DATA FOR PROCEDURAL REPLICATION;
+ALTER DATABASE ADD SUPPLEMENTAL LOG DATA;
+--
+--
+-- CDB User already exist or it is not needed for PDB Extract in databases greater then 19c, no action required.
+--
+--
+--#######################################################################
+--#### Create and Grant Privileges to the PDB GoldenGate Admin user. ####
+--######################################################################
+--
+-- GoldenGate PDB User does not exist, create PDB user is required to extract transactions from the database.
+ALTER SESSION SET CONTAINER = CDB$ROOT;
+--########################################################################################
+--          Database GoldenGate Error  
+--########################################################################################
+--
+ORA-20015: NO DATA FOUND, the service name 'XE' you entered does not exist in the database. Review your SERVICE NAME and try again.

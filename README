@@ -11,12 +11,16 @@ Container Names
     oracle-target
 
 Oracle:
-    sqlplus sys/myPassword as sysdba
-    select * from my_table;
+    sqlplus sys/myPassword1 as sysdba
+    select * from core.my_table;
+
+    sqlplus c##ggadmin/c##ggadmin;   
+    migration user: c##ggadmin/c##ggadmin
 
 GoldenGate
     Login: oggadmin
-    Password: myPassword
+    Password: myPassword1!
+    
 
 Troubleshootings:
 - goldengate could not start:
