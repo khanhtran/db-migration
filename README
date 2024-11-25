@@ -1,5 +1,5 @@
 Container ref:
-- oracle-xe: https://container-registry.oracle.com/ords/ocr/ba/database/express
+- oracle-xe: https://github.com/gvenzl/oci-oracle-xe
 - goldengate-free: https://container-registry.oracle.com/ords/ocr/ba/goldengate/goldengate-free
 
 
