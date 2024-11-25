@@ -21,6 +21,15 @@ GoldenGate
     Login: oggadmin
     Password: myPassword1!
     
+Disable COMMON_USER_PREFIX param to freely create user (no name restrictions):
+    ALTER SESSION SET CONTAINER=CDB$ROOT;
+    BEGIN
+        EXECUTE IMMEDIATE 'ALTER SYSTEM SET COMMON_USER_PREFIX='''' SCOPE=SPFILE';
+    END;
+    /
+    #restart the database
+    SHOW PARAMETER COMMON_USER_PREFIX;
+
 
 Troubleshootings:
 - goldengate could not start:

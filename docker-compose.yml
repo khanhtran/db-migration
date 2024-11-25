@@ -10,18 +10,19 @@ services:
       - "1521:1521"
     volumes:
       - oracle_source_data:/opt/oracle/oradata
-      - ./init.sql:/docker-entrypoint-initdb.d/setup/init.sql
-      - ./:/working  
+      #- comment out because this doesn't work
+      # - ./init.sql:/docker-entrypoint-initdb.d/setup/init.sql
+      - ./:/working 
   # GoldenGate
-  gg-source:
-    image: container-registry.oracle.com/goldengate/goldengate-free
-    container_name: gg-source
-    environment:
-      OGG_ADMIN_PWD: myPassword1!
-    ports:
-      - "8080:80"
-    volumes:
-      - gg_source_data:/u01/ogg
+  # gg-source:
+  #   image: container-registry.oracle.com/goldengate/goldengate-free
+  #   container_name: gg-source
+  #   environment:
+  #     OGG_ADMIN_PWD: myPassword1!
+  #   ports:
+  #     - "8080:80"
+  #   volumes:
+  #     - gg_source_data:/u01/ogg
 
   # Target
   # Oracle
